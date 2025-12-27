@@ -1,0 +1,5 @@
+{
+  "name": "ADHD Dashboard (Frontend)",
+  "description": "A high-fidelity React implementation of the ADHD Dashboard with Glassmorphism UI, Focus Mode, Kanban, and RTL support, designed to match the specified requirements.",
+  "requestFramePermissions": []
+}

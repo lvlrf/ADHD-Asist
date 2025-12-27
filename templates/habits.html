@@ -1,0 +1,73 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-white flex items-center gap-2">
+        <i data-lucide="target" class="text-pink-500"></i> ردیابی عادت‌ها
+    </h1>
+    <button class="text-slate-400 hover:text-white flex items-center gap-1 text-sm">
+        <i data-lucide="plus"></i> عادت جدید
+    </button>
+</div>
+
+<!-- Warning if habits empty -->
+{% if not good and not bad %}
+<div class="bg-yellow-500/10 border border-yellow-500/20 text-yellow-200 p-4 rounded-xl flex items-center gap-3 mb-6">
+    <i data-lucide="alert-triangle"></i>
+    <span>دیتابیس Habits تنظیم نشده یا خالی است. لطفا در Notion بررسی کنید.</span>
+</div>
+{% endif %}
+
+<!-- Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+    <div class="glass-card p-4 flex flex-col items-center justify-center border-t-2 border-slate-500">
+        <span class="text-2xl font-bold">{{ good|length + bad|length }}</span>
+        <span class="text-xs text-slate-500">کل عادت‌ها</span>
+    </div>
+    <div class="glass-card p-4 flex flex-col items-center justify-center border-t-2 border-green-500">
+        <span class="text-2xl font-bold text-green-400">{{ good|length }}</span>
+        <span class="text-xs text-slate-500">عادت خوب</span>
+    </div>
+    <div class="glass-card p-4 flex flex-col items-center justify-center border-t-2 border-red-500">
+        <span class="text-2xl font-bold text-red-400">{{ bad|length }}</span>
+        <span class="text-xs text-slate-500">عادت بد</span>
+    </div>
+</div>
+
+<h3 class="font-bold text-white mb-4">عادت‌های خوب 🟢</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    {% for h in good %}
+    <div class="glass-card p-5 relative overflow-hidden group">
+        <div class="flex justify-between items-start mb-2">
+            <h4 class="font-bold text-lg">{{ h.name }}</h4>
+            <div class="bg-green-500/20 text-green-400 p-1 rounded">
+                <i data-lucide="check" size="16"></i>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 text-slate-400 text-sm mt-4">
+            <i data-lucide="flame" size="16" class="text-orange-500"></i>
+            <span>{{ h.streak }} روز متوالی</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h3 class="font-bold text-white mb-4">عادت‌های بد 🔴</h3>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    {% for h in bad %}
+    <div class="glass-card p-5 relative overflow-hidden group border-red-500/20">
+        <div class="flex justify-between items-start mb-2">
+            <h4 class="font-bold text-lg text-slate-200">{{ h.name }}</h4>
+            <div class="bg-red-500/20 text-red-400 p-1 rounded">
+                <i data-lucide="x" size="16"></i>
+            </div>
+        </div>
+         <div class="flex items-center gap-2 text-slate-400 text-sm mt-4">
+            <i data-lucide="shield" size="16" class="text-blue-500"></i>
+            <span>{{ h.streak }} روز پاکی</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

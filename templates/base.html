@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADHD Dashboard v3.0</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Vazirmatn Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Vazirmatn', 'sans-serif'],
+            },
+            colors: {
+              bgDark: '#0f172a',
+              glass: {
+                bg: 'rgba(30, 41, 59, 0.7)',
+                border: 'rgba(255, 255, 255, 0.08)',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body { background-color: #0f172a; color: #e2e8f0; }
+      .glass-card {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1rem;
+      }
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #0f172a; }
+      ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+      
+      .quadrant { min-height: 180px; transition: all 0.2s; }
+      .quadrant:hover { background: rgba(255,255,255,0.02); }
+    </style>
+</head>
+<body class="font-sans overflow-hidden h-screen flex">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900/90 border-l border-white/5 flex flex-col p-4 z-20">
+        <div class="mb-8 flex items-center gap-2">
+            <span class="text-2xl">🧠</span>
+            <div>
+                <h1 class="font-bold text-lg">داشبورد ADHD</h1>
+                <p class="text-xs text-slate-500">v3.0</p>
+            </div>
+        </div>
+
+        <nav class="space-y-2 flex-1">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ 'bg-blue-600 text-white' if page == 'dashboard' else 'text-slate-400 hover:bg-slate-800' }}">
+                <i data-lucide="home"></i> <span>خانه</span>
+            </a>
+            <a href="/tasks" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ 'bg-blue-600 text-white' if page == 'tasks' else 'text-slate-400 hover:bg-slate-800' }}">
+                <i data-lucide="clipboard-list"></i> <span>کارها</span>
+            </a>
+            <a href="/habits" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ 'bg-blue-600 text-white' if page == 'habits' else 'text-slate-400 hover:bg-slate-800' }}">
+                <i data-lucide="target"></i> <span>عادت‌ها</span>
+            </a>
+            <a href="/analytics" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ 'bg-blue-600 text-white' if page == 'analytics' else 'text-slate-400 hover:bg-slate-800' }}">
+                <i data-lucide="bar-chart-2"></i> <span>آمار</span>
+            </a>
+            <a href="/settings" class="flex items-center gap-3 px-4 py-3 rounded-xl {{ 'bg-blue-600 text-white' if page == 'settings' else 'text-slate-400 hover:bg-slate-800' }}">
+                <i data-lucide="settings"></i> <span>تنظیمات</span>
+            </a>
+        </nav>
+
+        <button onclick="openFocusMode()" class="bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl flex items-center justify-center gap-2 mt-4 font-bold shadow-lg shadow-indigo-900/50">
+            <i data-lucide="zap"></i> Focus
+        </button>
+    </aside>
+
+    <!-- Content -->
+    <main class="flex-1 overflow-y-auto p-8 relative">
+        <!-- Background Blobs -->
+        <div class="fixed top-0 left-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="fixed bottom-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Focus Overlay -->
+    <div id="focus-overlay" class="fixed inset-0 bg-slate-950/95 z-50 hidden flex-col items-center justify-center text-center text-white">
+        <div class="mb-4">
+            <i data-lucide="target" class="w-16 h-16 text-pink-500 mx-auto mb-4"></i>
+            <h2 class="text-2xl font-bold">Focus Mode</h2>
+            <p class="text-slate-400">روی یک کار تمرکز کن</p>
+        </div>
+        
+        <h1 id="focus-task-title" class="text-4xl md:text-5xl font-bold my-8 text-blue-400 max-w-4xl">در حال بارگذاری...</h1>
+        
+        <div id="focus-timer" class="text-8xl font-mono font-bold mb-12 text-slate-200">25:00</div>
+        
+        <div class="flex gap-4">
+            <button onclick="toggleTimer()" id="timer-btn" class="px-8 py-3 rounded-full border border-white hover:bg-white/10 flex items-center gap-2">
+                <i data-lucide="play"></i> شروع
+            </button>
+            <button onclick="completeFocusTask()" class="px-8 py-3 rounded-full bg-green-500 hover:bg-green-600 text-white font-bold flex items-center gap-2 shadow-lg shadow-green-500/30">
+                <i data-lucide="check-square"></i> انجام شد
+            </button>
+        </div>
+        
+        <button onclick="closeFocusMode()" class="mt-8 text-slate-500 hover:text-white">خروج</button>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>lucide.createIcons();</script>
+</body>
+</html>
